@@ -220,7 +220,7 @@ Results update instantly on every keystroke
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/nafisrahman006/vibe-edtech.git
-cd lumina-learning
+cd vibe-edtech
 ```
 
 ### 2. Configure Environment Variables
