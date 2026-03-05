@@ -105,11 +105,13 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.IMAGE_NAME }}:test
+          scan-type: image
           format: table
           exit-code: "1"         # ⛔ fails pipeline if CRITICAL found
           ignore-unfixed: true
           vuln-type: os,library
           severity: CRITICAL
+          scanners: vuln     
 
       - name: Trivy scan — JSON artifact
         uses: aquasecurity/trivy-action@master
