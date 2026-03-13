@@ -60,7 +60,7 @@ name: Release
 on:
   push:
     tags:
-      - v1.1.2   # triggers on any tag like v1.1.1, v2.0.0
+      - v1.1.3   # triggers on any tag like v1.1.1, v2.0.0
 
 jobs:
   release:
@@ -110,11 +110,11 @@ jobs:
           context: ./ai-analyzer
           file: ./ai-analyzer/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/lumina-learning-ai:${{ steps.tag.outputs.IMAGE_TAG }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Print release info
         run: |
           echo "✅ Released root image → ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}"
-          echo "✅ Released ai-analyzer image → ${{ secrets.DOCKER_USERNAME }}/lumina-learning-ai:${{ steps.tag.outputs.IMAGE_TAG }}"
+          echo "✅ Released ai-analyzer image → ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}"
