@@ -261,7 +261,7 @@ jobs:
   auto-pr-merge:
     name: 🔀 Auto Merge docker → main
     runs-on: ubuntu-latest
-    needs: [docker, trivy]   # ⛔ both must pass
+    needs: [docker-build, trivy-scan]   # ⛔ both must pass
 
     permissions:
       contents: write
