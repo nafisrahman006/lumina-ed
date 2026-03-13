@@ -51,17 +51,8 @@ No shortcuts. No tutorials copy-pasted. Just vibes, curiosity, and a lot of debu
 ---
 ## App-Overview
 
-![Home Page](screenshots/Screenshot%202026-03-02%20214434.png)
-![Features](screenshots/feature.png)
-![certificate](screenshots/certficate.png)
+![Home Page](screenshots/lumina.gif)
 
-> Dark-themed dashboard with real-time course search, category badges, ratings, and pricing. Logged in as **Test User** with instant access to enrolled courses.
-
----
-
-### 🎓 Certificate of Achievement
-
-> Auto-generated **Certificate of Achievement** issued on course completion — includes course name, student name, issue date, verified badge, and dual signatures from Lead Instructor & Director of Education.
 
 ---
 
