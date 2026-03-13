@@ -1,21 +1,68 @@
-# ============================================================
-#  Release Pipeline — build & push versioned Docker image
-#  Trigger: Git tag pushed e.g. v1.1.1
-#  Pushes: lumina-learning:v1.1.1 to Docker Hub
-# ============================================================
+# # ============================================================
+# #  Release Pipeline — build & push versioned Docker image
+# #  Trigger: Git tag pushed e.g. v1.1.1
+# #  Pushes: lumina-learning:v1.1.1 to Docker Hub
+# # ============================================================
+
+# name: Release
+
+# on:
+#   push:
+#     tags:
+#       - "v1.1.1"    # triggers on v1.0.0, v1.1.1, v2.0.0 etc.
+
+# jobs:
+
+# # ===========================================================
+# # JOB 1 — Build & Push versioned image
+# # ===========================================================
+#   release:
+#     name: 🚀 Release ${{ github.ref_name }}
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
+
+#       - name: Log in to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           registry: docker.io
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+
+#       - name: Extract version tag
+#         id: tag
+#         run: |
+#           IMAGE_TAG=${GITHUB_REF#refs/tags/}
+#           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
+#           echo "📦 Building release: $IMAGE_TAG"
+
+#       - name: Build and push release image
+#         uses: docker/build-push-action@v5
+#         with:
+#           context: .
+#           push: true
+#           tags: |
+#             ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}
+#           cache-from: type=gha
+#           cache-to: type=gha,mode=max
+
+#       - name: Print release info
+#         run: |
+#           echo "✅ Released → ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}"
 
 name: Release
 
 on:
   push:
     tags:
-      - "v1.1.1"    # triggers on v1.0.0, v1.1.1, v2.0.0 etc.
+      - v1.1.2   # triggers on any tag like v1.1.1, v2.0.0
 
 jobs:
-
-# ===========================================================
-# JOB 1 — Build & Push versioned image
-# ===========================================================
   release:
     name: 🚀 Release ${{ github.ref_name }}
     runs-on: ubuntu-latest
@@ -41,16 +88,33 @@ jobs:
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
           echo "📦 Building release: $IMAGE_TAG"
 
-      - name: Build and push release image
+      # ─────────────────────────────
+      # Build & push root Dockerfile
+      # ─────────────────────────────
+      - name: Build & push root Dockerfile
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile
           push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ─────────────────────────────
+      # Build & push ai-analyzer Dockerfile
+      # ─────────────────────────────
+      - name: Build & push ai-analyzer Dockerfile
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ai-analyzer
+          file: ./ai-analyzer/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/lumina-learning-ai:${{ steps.tag.outputs.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Print release info
         run: |
-          echo "✅ Released → ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}"
+          echo "✅ Released root image → ${{ secrets.DOCKER_USERNAME }}/lumina-learning:${{ steps.tag.outputs.IMAGE_TAG }}"
+          echo "✅ Released ai-analyzer image → ${{ secrets.DOCKER_USERNAME }}/lumina-learning-ai:${{ steps.tag.outputs.IMAGE_TAG }}"
